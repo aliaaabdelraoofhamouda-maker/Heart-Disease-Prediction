@@ -3,7 +3,7 @@ import joblib
 import numpy as np
 
 # Load model and scaler
-model = joblib.load("heart_disease_model.pkl")
+model = joblib.load("heart_model.pkl")
 scaler = joblib.load("scaler.pkl")
 
 st.title("❤️ Heart Disease Prediction App")
