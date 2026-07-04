@@ -12,7 +12,7 @@ st.write("Enter patient details below:")
 # Inputs
 age = st.number_input("Age", 1, 120)
 
-sex = st.selectbox("Sex", [0, 1])  # 0=Female, 1=Male (حسب encoding بتاعك)
+sex = st.selectbox("Sex", [0, 1])  # 0=Female, 1=Male
 
 dataset = st.number_input("Dataset (encoded value)", 0, 10)
 
