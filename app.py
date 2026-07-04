@@ -6,57 +6,56 @@ import numpy as np
 model = joblib.load("heart_model.pkl")
 scaler = joblib.load("scaler.pkl")
 
-st.title("❤️ Heart Disease Prediction App")
-st.write("Enter patient details below:")
+st.set_page_config(page_title="Heart Disease App", layout="centered")
 
-# Inputs
-age = st.number_input("Age", 1, 120)
+st.title("❤️ Heart Disease Prediction System")
+st.write("Enter patient details below to predict heart disease risk")
 
-sex = st.selectbox("Sex", [0, 1])  # 0=Female, 1=Male
+# Layout
+col1, col2 = st.columns(2)
 
-dataset = st.number_input("Dataset (encoded value)", 0, 10)
+with col1:
+    age = st.number_input("Age", 1, 120)
+    sex = st.selectbox("Sex", ["Female", "Male"])
+    trestbps = st.number_input("Resting Blood Pressure")
+    fbs = st.selectbox("Fasting Blood Sugar", ["No", "Yes"])
+    exang = st.selectbox("Exercise Induced Angina", ["No", "Yes"])
 
-cp = st.number_input("Chest Pain Type (encoded)", 0, 10)
+with col2:
+    cp = st.selectbox("Chest Pain Type", [0, 1, 2, 3])
+    chol = st.number_input("Cholesterol")
+    restecg = st.selectbox("Resting ECG", [0, 1, 2])
+    thalch = st.number_input("Max Heart Rate")
+    oldpeak = st.number_input("Oldpeak")
+    slope = st.selectbox("Slope", [0, 1, 2])
 
-trestbps = st.number_input("Resting Blood Pressure")
-
-chol = st.number_input("Cholesterol")
-
-fbs = st.selectbox("Fasting Blood Sugar", [0, 1])
-
-restecg = st.number_input("Resting ECG (encoded)")
-
-thalch = st.number_input("Max Heart Rate")
-
-exang = st.selectbox("Exercise Induced Angina", [0, 1])
-
-oldpeak = st.number_input("Oldpeak")
-
-slope = st.number_input("Slope (encoded)")
-
-# Predict button
+# Predict
 if st.button("Predict"):
 
+    sex = 1 if sex == "Male" else 0
+    fbs = 1 if fbs == "Yes" else 0
+    exang = 1 if exang == "Yes" else 0
+
     features = np.array([[
-        age, sex, dataset, cp,
+        age, sex, 0, cp,
         trestbps, chol, fbs,
         restecg, thalch, exang,
         oldpeak, slope
     ]])
 
-    # Scaling
+    # scaling
     features = scaler.transform(features)
 
-    # Prediction
+    # prediction
     prediction = model.predict(features)[0]
     prob = model.predict_proba(features)[0]
 
+    # output
     st.subheader("Result:")
 
     if prediction == 1:
-        st.error("⚠️ Heart Disease Detected")
+        st.error("⚠️ High Risk of Heart Disease")
     else:
-        st.success("✅ No Heart Disease")
+        st.success("✅ Low Risk of Heart Disease")
 
-    st.write(f"Probability No Disease: {prob[0]:.2f}")
-    st.write(f"Probability Disease: {prob[1]:.2f}")
+    st.write(f"Risk Probability: {prob[1]*100:.2f}%")
